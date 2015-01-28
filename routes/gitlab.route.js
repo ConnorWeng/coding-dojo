@@ -20,11 +20,21 @@ router.get('/*', function(req, res, next) {
       getRepo.call(null, req, res, next);
     } else if (~req.url.indexOf('commits')) {
       getCommits.call(null, req, res, next, paths[3]);
+    } else if (~req.url.indexOf('tree')) {
+      getTree.call(null, req, res, next, paths[3], paths[5]);
     }
   } else {
     next(new Error('private key not provided'));
   }
 });
+
+function getTree(req, res, next, id, sha) {
+  listFiles(id, sha).then(function(tree) {
+    res.json(tree);
+  }).catch(function(reason) {
+    next(reason);
+  });
+}
 
 function getRepo(req, res, next) {
   findRepo(req.query.repoUrl)
@@ -41,6 +51,14 @@ function getCommits(req, res, next, id) {
   }).catch(function(reason) {
     next(reason);
   });
+}
+
+function listFiles(id, sha) {
+  var defered = Q.defer();
+  gitlab.projects.repository.listTree(id, {ref_name: sha}, function(tree) {
+    defered.resolve(tree);
+  });
+  return defered.promise;
 }
 
 function listCommits(id) {
