@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  div(ng-controller='gitCtrl')
+    input(type='text', ng-model='repoUrl', class="repo-url", placeholder="gitlab project url")
+    input(type='password', ng-model='privateKey', placeholder="gitlab private key")
+    input.startBtn(type='submit', value='START!', ng-click='getRepo()')
+    p#result {{repoName}}
