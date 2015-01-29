@@ -8,6 +8,8 @@
     "start": "node ./bin/www",
     "pretest": "npm install",
     "test": "node ./node_modules/mocha/bin/mocha -w --reporter=spec --recursive test/unit",
+    "pretestfront": "npm install",
+    "testfront": "karma start test/karma.conf.js",
     "preupdate-webdriver": "npm install",
     "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
@@ -30,6 +32,10 @@
     "mocha": "^2.1.0",
     "chai": "~1.9.1",
     "sinon": "^1.9.1",
-    "protractor": "^1.6.1"
+    "protractor": "^1.6.1",
+    "karma": "^0.12.31",
+    "jasmine-core": "^2.1.3",
+    "karma-jasmine": "^0.3.5",
+    "karma-chrome-launcher": "^0.1.7"
   }
 }
