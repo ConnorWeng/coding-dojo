@@ -6,40 +6,29 @@ var Gitlab = require('gitlab');
 var router = express.Router();
 var gitlab = null;
 
-router.get('/*', function(req, res, next) {
-  var pathname = url.parse(req.url).pathname;
-  var paths = pathname.split('/');
-  var privateKey = paths[1];
-  if (privateKey) {
-    gitlab = Gitlab({
-      url: 'http://gitlab.sdc.icbc',
-      token: privateKey
-    });
-    // TODO: replace with regex match
-    if (req.query.repoUrl) {
-      getRepo.call(null, req, res, next);
-    } else if (~req.url.indexOf('commits')) {
-      getCommits.call(null, req, res, next, paths[3]);
-    } else if (~req.url.indexOf('tree')) {
-      getTree.call(null, req, res, next, paths[3], paths[5]);
-    } else if (~req.url.indexOf('blobs')) {
-      getFile.call(null, req, res, next, paths[3], paths[5], req.query.filePath);
-    }
-  } else {
-    next(new Error('private key not provided'));
-  }
-});
+router.get('/:privateKey/repos', initGitlab, getRepo);
+router.get('/:privateKey/repos/:id/commits', initGitlab, getCommits);
+router.get('/:privateKey/repos/:id/tree/:sha', initGitlab, getTree);
+router.get('/:privateKey/repos/:id/blobs/:sha', initGitlab, getFile);
 
-function getFile(req, res, next, id, sha, filePath) {
-  showFile(id, sha, filePath).then(function(file) {
+function initGitlab(req, res, next) {
+  gitlab = Gitlab({
+    url: 'http://gitlab.sdc.icbc',
+    token: req.params.privateKey
+  });
+  next();
+}
+
+function getFile(req, res, next) {
+  showFile(req.params.id, req.params.sha, req.query.filePath).then(function(file) {
     res.send(file);
   }).catch(function(reason) {
     next(reason);
   });
 }
 
-function getTree(req, res, next, id, sha) {
-  listFiles(id, sha).then(function(tree) {
+function getTree(req, res, next) {
+  listFiles(req.params.id, req.params.sha).then(function(tree) {
     res.json(tree);
   }).catch(function(reason) {
     next(reason);
@@ -55,8 +44,8 @@ function getRepo(req, res, next) {
     });
 }
 
-function getCommits(req, res, next, id) {
-  listCommits(id).then(function(commits) {
+function getCommits(req, res, next) {
+  listCommits(req.params.id).then(function(commits) {
     res.json(commits);
   }).catch(function(reason) {
     next(reason);
