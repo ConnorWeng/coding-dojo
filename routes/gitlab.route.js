@@ -78,7 +78,11 @@ function showFile(id, sha, filePath) {
 function listFiles(id, sha) {
   var defered = Q.defer();
   gitlab.projects.repository.listTree(id, {ref_name: sha}, function(tree) {
-    defered.resolve(tree);
+    if (tree) {
+      defered.resolve(tree);
+    } else {
+      defered.reject(new Error('tree is empty, maybe repo id or ref is wrong'));
+    }
   });
   return defered.promise;
 }
@@ -87,7 +91,11 @@ function listCommits(id) {
   var defered = Q.defer();
   // FIXME: only support project which commits count below 100
   gitlab.projects.listCommits({id: id, per_page: 100}, function(commits) {
-    defered.resolve(commits);
+    if (commits) {
+      defered.resolve(commits);
+    } else {
+      defered.reject(new Error('commits not found, maybe repo id is wrong'));
+    }
   });
   return defered.promise;
 }
