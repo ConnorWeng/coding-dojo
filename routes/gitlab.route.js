@@ -22,11 +22,21 @@ router.get('/*', function(req, res, next) {
       getCommits.call(null, req, res, next, paths[3]);
     } else if (~req.url.indexOf('tree')) {
       getTree.call(null, req, res, next, paths[3], paths[5]);
+    } else if (~req.url.indexOf('blobs')) {
+      getFile.call(null, req, res, next, paths[3], paths[5], req.query.filePath);
     }
   } else {
     next(new Error('private key not provided'));
   }
 });
+
+function getFile(req, res, next, id, sha, filePath) {
+  showFile(id, sha, filePath).then(function(file) {
+    res.send(file);
+  }).catch(function(reason) {
+    next(reason);
+  });
+}
 
 function getTree(req, res, next, id, sha) {
   listFiles(id, sha).then(function(tree) {
@@ -51,6 +61,18 @@ function getCommits(req, res, next, id) {
   }).catch(function(reason) {
     next(reason);
   });
+}
+
+function showFile(id, sha, filePath) {
+  var defered = Q.defer();
+  gitlab.projects.repository.showFile(id, {ref: sha, file_path: filePath}, function(file) {
+    try {
+      defered.resolve(new Buffer(file.content, "base64").toString());
+    } catch(error) {
+      defered.reject(error);
+    }
+  });
+  return defered.promise;
 }
 
 function listFiles(id, sha) {
