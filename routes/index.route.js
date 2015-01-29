@@ -6,4 +6,8 @@ router.get('/', function(req, res) {
   res.render('index', { title: 'tddd' });
 });
 
+router.get('/templates/:name', function(req, res) {
+  res.render(req.params.name, { title: 'tddd' });
+});
+
 module.exports = router;
