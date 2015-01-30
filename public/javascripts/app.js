@@ -19,17 +19,55 @@ tdddApp.factory('repos', ['$resource', function($resource) {
   return $resource('/gitlab/:privateKey/repos');
 }]);
 
+tdddApp.factory('commits', ['$resource', function($resource) {
+  return $resource('/gitlab/:privateKey/repos/:id/commits');
+}]);
+
+tdddApp.factory('tree', ['$resource', function($resource) {
+  return $resource('/gitlab/:privateKey/repos/:id/tree/:sha');
+}]);
+
 tdddApp.factory('files', ['$resource', function($resource) {
   return $resource('/gitlab/:privateKey/repos/:id/blobs/:sha');
 }]);
 
-tdddApp.controller('gitlabCtrl', ['$scope', 'repos', function($scope, repos) {
+tdddApp.controller('gitlabCtrl', ['$scope', '$location', 'repos', 'commits', 'tree', function($scope, $location, repos, commits, tree) {
   $scope.getRepo = function() {
-    var repo = repos.get({
+    repos.get({
       repoUrl: $scope.repoUrl,
       privateKey: $scope.privateKey
-    }, function() {
-      $scope.repoName = repo.name;
+    }).$promise.then(function(repo) {
+      $scope.repo = repo;
+      return commits.query({
+        privateKey: $scope.privateKey,
+        id: $scope.repo.id
+      }).$promise;
+    }).then(function(cmts) {
+      $scope.sha = cmts[cmts.length - 1]['short_id'];
+      return tree.query({
+        privateKey: $scope.privateKey,
+        id: $scope.repo.id,
+        sha: $scope.sha
+      }).$promise;
+    }).then(function(fileTree) {
+      var files = [];
+      for (var i = 0; i < fileTree.length; i++) {
+        var file = fileTree[i];
+        if (file.type === 'blob') {
+          files.push(file);
+          if (files.length === 2) {
+            break;
+          }
+        }
+      }
+      $scope.fileA = files[0].name;
+      $scope.fileB = files[1].name;
+    }).then(function() {
+      $location.path('/gitlab/' + $scope.privateKey +
+                     '/repos/' + $scope.repo.id +
+                     '/blobs/' + $scope.sha +
+                     '/' + $scope.fileA +
+                     '/' + $scope.fileB);
     });
   };
 }]);

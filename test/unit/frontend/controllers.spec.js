@@ -1,21 +1,44 @@
 describe('tddd controllers', function() {
+  beforeEach(function(){
+    this.addMatchers({
+      toEqualData: function(expected) {
+        return angular.equals(this.actual, expected);
+      }
+    });
+  });
+
   beforeEach(module('tdddApp'));
 
   describe('gitlabCtrl', function() {
-    var scope, ctrl, $httpBackend;
+    var scope, ctrl, $httpBackend, $location;
 
-    beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
+    beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, _$location_) {
       $httpBackend = _$httpBackend_;
+      $location = _$location_;
       scope = $rootScope.$new();
       ctrl = $controller('gitlabCtrl', {$scope: scope});
     }));
 
-    it('should set the repo name', function() {
+    it('should get repo, sha, fileA, fileB', function() {
+      var repo = {name: 'a repo', id: '1'};
       scope.privateKey = 'xyz';
-      $httpBackend.expectGET('/gitlab/xyz/repos').respond({name: 'a repo'});
+      $httpBackend.expectGET('/gitlab/xyz/repos').respond(repo);
+      $httpBackend.expectGET('/gitlab/xyz/repos/1/commits').respond([
+        {short_id: 'abcd1'},
+        {short_id: 'abcd2'}
+      ]);
+      $httpBackend.expectGET('/gitlab/xyz/repos/1/tree/abcd2').respond([
+        {name: 'fa', type: 'blob'},
+        {name: 'fb', type: 'tree'},
+        {name: 'fc', type: 'blob'}
+      ]);
       scope.getRepo();
       $httpBackend.flush();
-      expect(scope.repoName).toBe('a repo');
+      expect(scope.repo).toEqualData(repo);
+      expect(scope.sha).toBe('abcd2');
+      expect(scope.fileA).toBe('fa');
+      expect(scope.fileB).toBe('fc');
+      expect($location.path()).toBe('/gitlab/xyz/repos/1/blobs/abcd2/fa/fc');
     });
   });
 
