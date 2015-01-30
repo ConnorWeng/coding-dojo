@@ -21,7 +21,7 @@ function initGitlab(req, res, next) {
 
 function getFile(req, res, next) {
   showFile(req.params.id, req.params.sha, req.query.filePath).then(function(file) {
-    res.send(file);
+    res.json({content: file});
   }).catch(function(reason) {
     next(reason);
   });

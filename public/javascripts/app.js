@@ -19,6 +19,10 @@ tdddApp.factory('repos', ['$resource', function($resource) {
   return $resource('/gitlab/:privateKey/repos');
 }]);
 
+tdddApp.factory('files', ['$resource', function($resource) {
+  return $resource('/gitlab/:privateKey/repos/:id/blobs/:sha');
+}]);
+
 tdddApp.controller('gitlabCtrl', ['$scope', 'repos', function($scope, repos) {
   $scope.getRepo = function() {
     var repo = repos.get({
@@ -30,8 +34,20 @@ tdddApp.controller('gitlabCtrl', ['$scope', 'repos', function($scope, repos) {
   };
 }]);
 
-tdddApp.controller('editorCtrl', ['$scope', function($scope) {
-  $scope.fileA = 'a';
-  $scope.fileB = 'b';
-  $scope.state = '20%';
+tdddApp.controller('editorCtrl', ['$scope', '$routeParams', 'files', function($scope, $routeParams, files) {
+  $scope.fileA = $scope.fileB = 'loading...';
+  fillCode('fileA');
+  fillCode('fileB');
+  $scope.state = '80%';
+
+  function fillCode(whichFile) {
+    var file = files.get({
+      privateKey: $routeParams.privateKey,
+      id: $routeParams.id,
+      sha: $routeParams.sha,
+      filePath: $routeParams[whichFile]
+    }, function() {
+      $scope[whichFile] = file.content;
+    });
+  }
 }]);
