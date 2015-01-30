@@ -31,5 +31,7 @@ tdddApp.controller('gitlabCtrl', ['$scope', 'repos', function($scope, repos) {
 }]);
 
 tdddApp.controller('editorCtrl', ['$scope', function($scope) {
-
+  $scope.fileA = 'a';
+  $scope.fileB = 'b';
+  $scope.state = '20%';
 }]);

@@ -1,2 +1,10 @@
 div(ng-controller='editorCtrl')
-  p hi
+  div.progress
+    div.state(style='width:{{state}}')
+  div.editor.editor-left {{fileA}}
+  div.editor {{fileB}}
+  div.operation
+    div.btnContainer.btnContainer-left
+      a.prev <&nbsp;
+    div.btnContainer
+      a.next >
