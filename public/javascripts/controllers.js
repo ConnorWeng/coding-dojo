@@ -1,4 +1,4 @@
-var tdddControllers = angular.module('tdddControllers', []);
+var tdddControllers = angular.module('tdddControllers', ['ngSanitize']);
 
 tdddControllers.controller('gitlabCtrl', ['$scope', '$location', 'repos', 'commits', 'tree', function($scope, $location, repos, commits, tree) {
   $scope.getRepo = function() {
@@ -41,7 +41,7 @@ tdddControllers.controller('gitlabCtrl', ['$scope', '$location', 'repos', 'commi
   };
 }]);
 
-tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location', 'files', 'commits', function($scope, $routeParams, $location, files, commits) {
+tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location', '$sce', 'files', 'commits', function($scope, $routeParams, $location, $sce, files, commits) {
   $scope.fileA = $scope.fileB = 'loading...';
   $scope.state = 0;
   fillCode('fileA');
@@ -73,7 +73,7 @@ tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location',
       sha: $routeParams.sha,
       filePath: $routeParams[whichFile]
     }, function() {
-      $scope[whichFile] = file.content;
+      $scope[whichFile] = $sce.trustAsHtml(file.content);
     });
   }
 }]);

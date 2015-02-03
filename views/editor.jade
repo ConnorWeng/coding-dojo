@@ -2,9 +2,9 @@ div
   div.progress
     div.state(style='width:{{state}}')
   div.editor.editor-left
-    pre {{fileA}}
+    div(ng-bind-html='fileA')
   div.editor
-    pre {{fileB}}
+    div(ng-bind-html='fileB')
   div.operation
     div.btnContainer.btnContainer-left
       a.prev(href='{{prev || "javascript: void 0;"}}', ng-class='{disabled: !prev}') <&nbsp;

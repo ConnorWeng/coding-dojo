@@ -2,6 +2,7 @@ var express = require('express');
 var url = require('url');
 var Q = require('q');
 var Gitlab = require('gitlab');
+var colorize = require('pygments').colorize;
 
 var router = express.Router();
 var gitlab = null;
@@ -21,7 +22,9 @@ function initGitlab(req, res, next) {
 
 function getFile(req, res, next) {
   showFile(req.params.id, req.params.sha, req.query.filePath).then(function(file) {
-    res.json({content: file});
+    colorize(file, 'sql', 'html', function(data) {
+      res.json({content: data});
+    });
   }).catch(function(reason) {
     next(reason);
   });
