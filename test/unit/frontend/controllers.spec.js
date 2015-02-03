@@ -43,21 +43,32 @@ describe('tddd controllers', function() {
   });
 
   describe('editorCtrl', function() {
-    var scope, ctrl, $httpBackend;
+    var scope, ctrl, $httpBackend, $location;
 
-    beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams) {
+    beforeEach(inject(function(_$httpBackend_, _$location_, $rootScope, $controller, $routeParams) {
       $httpBackend = _$httpBackend_;
+      $location = _$location_;
       $routeParams.privateKey = 'privateKey';
       $routeParams.id = 'id';
       $routeParams.sha = 'sha';
       $routeParams.fileA = 'fileA';
       $routeParams.fileB = 'fileB';
+      $location.path('/gitlab/privateKey/repos/id/blobs/sha/fileA/fileB');
       $httpBackend.expectGET('/gitlab/privateKey/repos/id/blobs/sha?filePath=fileA').respond({
         content: 'fileA content'
       });
       $httpBackend.expectGET('/gitlab/privateKey/repos/id/blobs/sha?filePath=fileB').respond({
         content: 'fileB content'
       });
+      $httpBackend.expectGET('/gitlab/privateKey/repos/id/commits').respond([{
+        short_id: 'trival3'
+      }, {
+        short_id: 'trival2'
+      }, {
+        short_id: 'sha'
+      }, {
+        short_id: 'trival1'
+      }]);
       scope = $rootScope.$new();
       ctrl = $controller('editorCtrl', {$scope: scope});
     }));
@@ -68,6 +79,16 @@ describe('tddd controllers', function() {
       $httpBackend.flush();
       expect(scope.fileA).toBe('fileA content');
       expect(scope.fileB).toBe('fileB content');
+    });
+
+    it('should set state, next, prev', function() {
+      expect(scope.state).toBe(0);
+      expect(scope.next).toBe(void 0);
+      expect(scope.prev).toBe(void 0);
+      $httpBackend.flush();
+      expect(scope.state).toBe('34%');
+      expect(scope.next).toBe('/#/gitlab/privateKey/repos/id/blobs/trival2/fileA/fileB');
+      expect(scope.prev).toBe('/#/gitlab/privateKey/repos/id/blobs/trival1/fileA/fileB');
     });
   })
 });

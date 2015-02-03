@@ -72,11 +72,30 @@ tdddApp.controller('gitlabCtrl', ['$scope', '$location', 'repos', 'commits', 'tr
   };
 }]);
 
-tdddApp.controller('editorCtrl', ['$scope', '$routeParams', 'files', function($scope, $routeParams, files) {
+tdddApp.controller('editorCtrl', ['$scope', '$routeParams', '$location', 'files', 'commits', function($scope, $routeParams, $location, files, commits) {
   $scope.fileA = $scope.fileB = 'loading...';
+  $scope.state = 0;
   fillCode('fileA');
   fillCode('fileB');
-  $scope.state = '80%';
+
+  var cmts = commits.query({
+    privateKey: $routeParams.privateKey,
+    id: $routeParams.id
+  }, function() {
+    for (var i = 0; i < cmts.length; i++) {
+      var cmt = cmts[i];
+      if (cmt.short_id === $routeParams.sha) {
+        $scope.state = (100 - parseInt(i * 100 / (cmts.length - 1))).toString() + '%';
+        if (i - 1 > -1) {
+          $scope.next = '/#' + $location.path().replace($routeParams.sha, cmts[i-1]['short_id']);
+        }
+        if (i + 1 < cmts.length) {
+          $scope.prev = '/#' + $location.path().replace($routeParams.sha, cmts[i+1]['short_id']);
+        }
+        break;
+      }
+    }
+  });
 
   function fillCode(whichFile) {
     var file = files.get({

@@ -7,6 +7,6 @@ div
     pre {{fileB}}
   div.operation
     div.btnContainer.btnContainer-left
-      a.prev <&nbsp;
+      a.prev(href='{{prev || "javascript: void 0;"}}', ng-class='{disabled: !prev}') <&nbsp;
     div.btnContainer
-      a.next >
+      a.next(href='{{next || "javascript: void 0;"}}', ng-class='{disabled: !next}') >
