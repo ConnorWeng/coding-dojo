@@ -20,14 +20,14 @@ describe('tddd controllers', function() {
     }));
 
     it('should get repo, sha, fileA, fileB', function() {
-      var repo = {name: 'a repo', id: '1'};
+      var repo = {name: 'a repo', id: '1', encrypted_private_key: 'encrypted_xyz'};
       scope.privateKey = 'xyz';
       $httpBackend.expectGET('/gitlab/xyz/repos').respond(repo);
-      $httpBackend.expectGET('/gitlab/xyz/repos/1/commits').respond([
+      $httpBackend.expectGET('/gitlab/encrypted_xyz/repos/1/commits').respond([
         {short_id: 'abcd1'},
         {short_id: 'abcd2'}
       ]);
-      $httpBackend.expectGET('/gitlab/xyz/repos/1/tree/abcd2').respond([
+      $httpBackend.expectGET('/gitlab/encrypted_xyz/repos/1/tree/abcd2').respond([
         {name: 'fa', type: 'blob'},
         {name: 'fb', type: 'tree'},
         {name: 'fc', type: 'blob'}
@@ -38,16 +38,17 @@ describe('tddd controllers', function() {
       expect(scope.sha).toBe('abcd2');
       expect(scope.fileA).toBe('fa');
       expect(scope.fileB).toBe('fc');
-      expect($location.path()).toBe('/gitlab/xyz/repos/1/blobs/abcd2/fa/fc');
+      expect($location.path()).toBe('/gitlab/encrypted_xyz/repos/1/blobs/abcd2/fa/fc');
     });
   });
 
   describe('editorCtrl', function() {
-    var scope, ctrl, $httpBackend, $location;
+    var scope, ctrl, $httpBackend, $location, $sce;
 
-    beforeEach(inject(function(_$httpBackend_, _$location_, $rootScope, $controller, $routeParams) {
+    beforeEach(inject(function(_$httpBackend_, _$location_, _$sce_, $rootScope, $controller, $routeParams) {
       $httpBackend = _$httpBackend_;
       $location = _$location_;
+      $sce = _$sce_;
       $routeParams.privateKey = 'privateKey';
       $routeParams.id = 'id';
       $routeParams.sha = 'sha';
@@ -77,8 +78,8 @@ describe('tddd controllers', function() {
       expect(scope.fileA).toBe('loading...');
       expect(scope.fileB).toBe('loading...');
       $httpBackend.flush();
-      expect(scope.fileA).toBe('fileA content');
-      expect(scope.fileB).toBe('fileB content');
+      expect($sce.getTrustedHtml(scope.fileA)).toBe('fileA content');
+      expect($sce.getTrustedHtml(scope.fileB)).toBe('fileB content');
     });
 
     it('should set state, next, prev', function() {

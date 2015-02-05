@@ -1,23 +1,28 @@
+var crypto = require('crypto');
+var querystring = require('querystring');
 var express = require('express');
 var url = require('url');
 var Q = require('q');
 var Gitlab = require('gitlab');
 var colorize = require('pygments').colorize;
 
+var encryptKey = require('../authentication.json').encrypt_key;
 var router = express.Router();
 var gitlab = null;
 
-router.get('/:privateKey/repos', initGitlab, getRepo);
-router.get('/:privateKey/repos/:id/commits', initGitlab, getCommits);
-router.get('/:privateKey/repos/:id/tree/:sha', initGitlab, getTree);
-router.get('/:privateKey/repos/:id/blobs/:sha', initGitlab, getFile);
+router.get('/:privateKey/repos', makeInitGitlab(false), getRepo);
+router.get('/:privateKey/repos/:id/commits', makeInitGitlab(true), getCommits);
+router.get('/:privateKey/repos/:id/tree/:sha', makeInitGitlab(true), getTree);
+router.get('/:privateKey/repos/:id/blobs/:sha', makeInitGitlab(true), getFile);
 
-function initGitlab(req, res, next) {
-  gitlab = Gitlab({
-    url: 'http://gitlab.sdc.icbc',
-    token: req.params.privateKey
-  });
-  next();
+function makeInitGitlab(isEncrypted) {
+  return function(req, res, next) {
+    gitlab = Gitlab({
+      url: 'http://gitlab.sdc.icbc',
+      token: isEncrypted ? decrypt(querystring.unescape(req.params.privateKey)) : req.params.privateKey
+    });
+    next();
+  };
 }
 
 function getFile(req, res, next) {
@@ -41,6 +46,7 @@ function getTree(req, res, next) {
 function getRepo(req, res, next) {
   findRepo(req.query.repoUrl)
     .then(function(project) {
+      project.encrypted_private_key = querystring.escape(encrypt(req.params.privateKey));
       res.json(project);
     }).catch(function(reason) {
       next(reason);
@@ -109,5 +115,19 @@ function findRepo(repoUrl) {
   });
   return defered.promise;
 }
+
+var encrypt = router.encrypt = function(plain) {
+  var cipher = crypto.createCipher('des', encryptKey);
+  var encrypted = cipher.update(plain, 'utf8', 'base64');
+  encrypted += cipher.final('base64');
+  return encrypted;
+};
+
+var decrypt = router.decrypt = function(encrypted) {
+  var decipher = crypto.createDecipher('des', encryptKey);
+  var plain = decipher.update(encrypted, 'base64', 'utf8');
+  plain += decipher.final('utf8');
+  return plain;
+};
 
 module.exports = router;

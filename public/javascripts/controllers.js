@@ -8,13 +8,13 @@ tdddControllers.controller('gitlabCtrl', ['$scope', '$location', 'repos', 'commi
     }).$promise.then(function(repo) {
       $scope.repo = repo;
       return commits.query({
-        privateKey: $scope.privateKey,
+        privateKey: $scope.repo.encrypted_private_key,
         id: $scope.repo.id
       }).$promise;
     }).then(function(cmts) {
       $scope.sha = cmts[cmts.length - 1]['short_id'];
       return tree.query({
-        privateKey: $scope.privateKey,
+        privateKey: $scope.repo.encrypted_private_key,
         id: $scope.repo.id,
         sha: $scope.sha
       }).$promise;
@@ -32,11 +32,13 @@ tdddControllers.controller('gitlabCtrl', ['$scope', '$location', 'repos', 'commi
       $scope.fileA = files[0].name;
       $scope.fileB = files[1].name;
     }).then(function() {
-      $location.path('/gitlab/' + $scope.privateKey +
+      $location.path('/gitlab/' + $scope.repo.encrypted_private_key +
                      '/repos/' + $scope.repo.id +
                      '/blobs/' + $scope.sha +
                      '/' + $scope.fileA +
                      '/' + $scope.fileB);
+    }).catch(function(reason) {
+      console.log(reason);
     });
   };
 }]);
@@ -56,10 +58,10 @@ tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location',
       if (cmt.short_id === $routeParams.sha) {
         $scope.state = (100 - parseInt(i * 100 / (cmts.length - 1))).toString() + '%';
         if (i - 1 > -1) {
-          $scope.next = '/#' + $location.path().replace($routeParams.sha, cmts[i-1]['short_id']);
+          $scope.next = '/#' + $location.url().replace($routeParams.sha, cmts[i-1]['short_id']);
         }
         if (i + 1 < cmts.length) {
-          $scope.prev = '/#' + $location.path().replace($routeParams.sha, cmts[i+1]['short_id']);
+          $scope.prev = '/#' + $location.url().replace($routeParams.sha, cmts[i+1]['short_id']);
         }
         break;
       }
