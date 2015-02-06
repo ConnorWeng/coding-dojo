@@ -70,6 +70,7 @@ describe('tddd controllers', function() {
       }, {
         short_id: 'trival1'
       }]);
+      $httpBackend.expectGET('/gitlab/privateKey/repos/id/tree/sha').respond([]);
       scope = $rootScope.$new();
       ctrl = $controller('editorCtrl', {$scope: scope});
     }));

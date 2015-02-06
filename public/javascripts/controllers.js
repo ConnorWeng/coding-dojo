@@ -43,7 +43,7 @@ tdddControllers.controller('gitlabCtrl', ['$scope', '$location', 'repos', 'commi
   };
 }]);
 
-tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location', '$sce', 'files', 'commits', function($scope, $routeParams, $location, $sce, files, commits) {
+tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location', '$sce', 'files', 'commits', 'tree', function($scope, $routeParams, $location, $sce, files, commits, tree) {
   $scope.fileA = $scope.fileB = 'loading...';
   $scope.state = 0;
   fillCode('fileA');
@@ -67,6 +67,29 @@ tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location',
       }
     }
   });
+
+  tree.query({
+    privateKey: $routeParams.privateKey,
+    id: $routeParams.id,
+    sha: $routeParams.sha
+  }).$promise.then(function(tree) {
+    var filePaths = [];
+    for(var i = 0; i < tree.length; i++) {
+      var file = tree[i];
+      filePaths.push(file.name);
+    }
+    $scope.filePaths = filePaths;
+    $scope.filePathA = $routeParams.fileA;
+    $scope.filePathB = $routeParams.fileB;
+  });
+
+  $scope.switchFile = function(path) {
+    $location.url('/gitlab/' + $routeParams.privateKey +
+                  '/repos/' + $routeParams.id +
+                  '/blobs/' + $routeParams.sha +
+                  '/' + $scope.filePathA +
+                  '/' + $scope.filePathB);
+  };
 
   function fillCode(whichFile) {
     var file = files.get({

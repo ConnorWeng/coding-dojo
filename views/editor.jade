@@ -2,8 +2,12 @@ div
   div.progress
     div.state(style='width:{{state}}')
   div.editor.editor-left
+    div.filePath
+      select(ng-model='filePathA', ng-options='path for path in filePaths', ng-change='switchFile()')
     div(ng-bind-html='fileA')
   div.editor
+    div.filePath
+      select(ng-model='filePathB', ng-options='path for path in filePaths', ng-change='switchFile()')
     div(ng-bind-html='fileB')
   div.operation
     div.btnContainer.btnContainer-left

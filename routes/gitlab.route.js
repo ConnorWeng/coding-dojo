@@ -26,7 +26,7 @@ function makeInitGitlab(isEncrypted) {
 }
 
 function getFile(req, res, next) {
-  showFile(req.params.id, req.params.sha, req.query.filePath).then(function(file) {
+  showFile(req.params.id, req.params.sha, req.query.filePath.replace(/\|/g, '/')).then(function(file) {
     colorize(file, 'sql', 'html', function(data) {
       res.json({content: data});
     });
@@ -73,13 +73,27 @@ function showFile(id, sha, filePath) {
   return defered.promise;
 }
 
-function listFiles(id, sha) {
-  var defered = Q.defer();
-  gitlab.projects.repository.listTree(id, {ref_name: sha}, function(tree) {
-    if (tree) {
-      defered.resolve(tree);
+function listFiles(id, sha, path, remains, defered, files) {
+  files = files || [];
+  remains = remains || [];
+  path = path || '';
+  defered = defered || Q.defer();
+  gitlab.projects.repository.listTree(id, {ref_name: sha, path: path}, function(tree) {
+    for(var i = 0; i < tree.length; i++) {
+      var file = tree[i];
+      if (path) {
+        file.name = path.replace(/\//g, '|') + '|' + file.name;
+      }
+      if (file.type === 'blob') {
+        files.push(file);
+      } else if (file.type === 'tree') {
+        remains.push(file.name.replace(/\|/g, '/'));
+      }
+    }
+    if (remains.length > 0) {
+      listFiles(id, sha, remains.shift(), remains, defered, files);
     } else {
-      defered.reject(new Error('tree is empty, maybe repo id or ref is wrong'));
+      defered.resolve(files);
     }
   });
   return defered.promise;
