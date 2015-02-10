@@ -70,7 +70,13 @@ describe('tddd controllers', function() {
       }, {
         short_id: 'trival1'
       }]);
-      $httpBackend.expectGET('/gitlab/privateKey/repos/id/tree/sha').respond([]);
+      $httpBackend.expectGET('/gitlab/privateKey/repos/id/tree/sha').respond([{
+        name: 'file1'
+      }, {
+        name: 'file2'
+      }, {
+        name: 'dir|file3'
+      }]);
       scope = $rootScope.$new();
       ctrl = $controller('editorCtrl', {$scope: scope});
     }));
@@ -91,6 +97,13 @@ describe('tddd controllers', function() {
       expect(scope.state).toBe('34%');
       expect(scope.next).toBe('/#/gitlab/privateKey/repos/id/blobs/trival2/fileA/fileB');
       expect(scope.prev).toBe('/#/gitlab/privateKey/repos/id/blobs/trival1/fileA/fileB');
+    });
+
+    it('should set filePaths, filePathA, filePathB', function() {
+      $httpBackend.flush();
+      expect(scope.filePaths).toEqualData(['file1', 'file2', 'dir|file3']);
+      expect(scope.filePathA).toBe('fileA');
+      expect(scope.filePathB).toBe('fileB');
     });
   })
 });

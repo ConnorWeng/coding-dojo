@@ -28,5 +28,11 @@ describe('tddd app', function() {
       element(by.css('.next')).click();
       expect(browser.getCurrentUrl()).toContain('/gitlab/oyZUm9kJiqGPGYdqRg87RwHg3hbjW83l/repos/241/blobs/8d125892f02/fnc_get_factor.fnc/ut_get_factor.pck');
     });
+
+    it('should switch file after select new path', function() {
+      element(by.css('.next')).click();
+      element(by.cssContainingText('option', 'readme.md')).click();
+      expect(browser.getCurrentUrl()).toContain('/gitlab/oyZUm9kJiqGPGYdqRg87RwHg3hbjW83l/repos/241/blobs/8d125892f02/readme.md/ut_get_factor.pck');
+    });
   });
 });

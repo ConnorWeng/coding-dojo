@@ -83,7 +83,7 @@ tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location',
     $scope.filePathB = $routeParams.fileB;
   });
 
-  $scope.switchFile = function(path) {
+  $scope.switchFile = function() {
     $location.url('/gitlab/' + $routeParams.privateKey +
                   '/repos/' + $routeParams.id +
                   '/blobs/' + $routeParams.sha +
