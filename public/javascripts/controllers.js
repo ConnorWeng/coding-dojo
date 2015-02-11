@@ -24,13 +24,15 @@ tdddControllers.controller('gitlabCtrl', ['$scope', '$location', 'repos', 'commi
         var file = fileTree[i];
         if (file.type === 'blob') {
           files.push(file);
-          if (files.length === 2) {
-            break;
-          }
         }
       }
-      $scope.fileA = files[0].name;
-      $scope.fileB = files[1].name;
+      if (files.length > 1) {
+        $scope.fileA = files[0].name;
+        $scope.fileB = files[1].name;
+      } else {
+        $scope.fileA = 'trival';
+        $scope.fileB = 'trival';
+      }
     }).then(function() {
       $location.path('/gitlab/' + $scope.repo.encrypted_private_key +
                      '/repos/' + $scope.repo.id +
@@ -101,4 +103,8 @@ tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location',
       $scope[whichFile] = $sce.trustAsHtml(file.content);
     });
   }
+}]);
+
+tdddApp.controller('listCtrl', ['$scope', function($scope) {
+
 }]);
