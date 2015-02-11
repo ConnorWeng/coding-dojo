@@ -2,7 +2,7 @@ var tdddApp = angular.module('tdddApp', ['ngResource', 'ngRoute', 'tdddControlle
 
 tdddApp.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
-    when('/', {
+    when('/gitlab', {
       templateUrl: 'templates/gitlab',
       controller: 'gitlabCtrl'
     }).

@@ -1,7 +1,7 @@
 describe('tddd app', function() {
   describe('index page', function() {
     beforeEach(function() {
-      browser.get('/');
+      browser.get('/#/gitlab');
     });
 
     it('should jump to the right url', function() {
