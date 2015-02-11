@@ -27,7 +27,11 @@ function makeInitGitlab(isEncrypted) {
 
 function getFile(req, res, next) {
   showFile(req.params.id, req.params.sha, req.query.filePath.replace(/\|/g, '/')).then(function(file) {
-    colorize(file, 'sql', 'html', function(data) {
+    var type = 'sql';
+    if (~req.query.filePath.indexOf('.java')) {
+      type = 'java';
+    }
+    colorize(file, type, 'html', function(data) {
       res.json({content: data});
     });
   }).catch(function(reason) {
