@@ -10,7 +10,8 @@ div
       select(ng-model='filePathB', ng-options='path for path in filePaths', ng-change='switchFile()')
     div(ng-bind-html='fileB')
   div.operation
-    div.btnContainer.btnContainer-left
-      a.prev(href='{{prev || "javascript: void 0;"}}', ng-class='{disabled: !prev}') <&nbsp;
+    div.btnContainerMargin
     div.btnContainer
+      a.prev(href='{{prev || "javascript: void 0;"}}', ng-class='{disabled: !prev}') <&nbsp;
+    div.btnContainer.btnContainer-right
       a.next(href='{{next || "javascript: void 0;"}}', ng-class='{disabled: !next}') >
