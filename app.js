@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index.route');
 var gitlabRoute = require('./routes/gitlab.route');
+var counterRoute = require('./routes/counter.route');
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/gitlab', gitlabRoute);
+app.use('/counter', counterRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

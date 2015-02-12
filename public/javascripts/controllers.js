@@ -105,6 +105,21 @@ tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location',
   }
 }]);
 
-tdddApp.controller('listCtrl', ['$scope', function($scope) {
+tdddApp.controller('listCtrl', ['$scope', 'counter', function($scope, counter) {
+  initCounter(241);
+  initCounter(270);
+  initCounter(271);
+  initCounter(272);
 
+  function initCounter(id) {
+    var count = counter.get({name: id}, function() {
+      $scope['counter' + id] = count.count;
+    });
+  }
+
+  $scope.incrCounter = function(id, href) {
+    var count = counter.incr({name: id}, function() {
+      $scope['counter' + id] = count.count;
+    });
+  };
 }]);

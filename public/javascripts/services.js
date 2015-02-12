@@ -13,3 +13,9 @@ tdddApp.factory('tree', ['$resource', function($resource) {
 tdddApp.factory('files', ['$resource', function($resource) {
   return $resource('/gitlab/:privateKey/repos/:id/blobs/:sha');
 }]);
+
+tdddApp.factory('counter', ['$resource', function($resource) {
+  return $resource('/counter/:name', {}, {
+    incr: {method:'POST', params: {name: '@name'}}
+  });
+}]);
