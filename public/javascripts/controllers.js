@@ -110,6 +110,7 @@ tdddApp.controller('listCtrl', ['$scope', 'counter', function($scope, counter) {
   initCounter(270);
   initCounter(271);
   initCounter(272);
+  initCounter(279);
 
   function initCounter(id) {
     var count = counter.get({name: id}, function() {
