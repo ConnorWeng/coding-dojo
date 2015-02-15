@@ -1,0 +1,6 @@
+{
+  "gitlab_url": "http://gitlab.com",
+  "encrypt_key": "abcde",
+  "redis_port": 6379,
+  "redis_host": "111.111.111.111"
+}
