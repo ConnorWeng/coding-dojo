@@ -32,7 +32,7 @@ npm install
 
 - 根据服务器信息修改authentication.example.json中的配置，然后另存为authentication.json
 - 运行`npm start`
-- 访问`http://localhost:3000`
+- 访问`http://localhost:3000/#/gitlab`输入Gitlab上的TDD项目的url，及Gitlab用户的private key就可以浏览项目代码了
 
 ### 测试 ###
 
