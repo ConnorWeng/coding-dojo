@@ -6,6 +6,7 @@ var Q = require('q');
 var Gitlab = require('gitlab');
 var colorize = require('pygments').colorize;
 
+var gitlabUrl = require('../authentication.json').gitlab_url;
 var encryptKey = require('../authentication.json').encrypt_key;
 var router = express.Router();
 var gitlab = null;
@@ -18,7 +19,7 @@ router.get('/:privateKey/repos/:id/blobs/:sha', makeInitGitlab(true), getFile);
 function makeInitGitlab(isEncrypted) {
   return function(req, res, next) {
     gitlab = Gitlab({
-      url: 'http://gitlab.sdc.icbc',
+      url: gitlabUrl,
       token: isEncrypted ? decrypt(querystring.unescape(req.params.privateKey)) : req.params.privateKey
     });
     next();
