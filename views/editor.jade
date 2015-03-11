@@ -15,3 +15,5 @@ div
   div.btnContainer.btnContainer-right
     div.btnContainerMargin
     a.next(href='{{next || "javascript: void 0;"}}', ng-class='{disabled: !next}') >
+  div.msg(style='{{msgPos()}}}', ng-show='state')
+    {{cmtMsg}}

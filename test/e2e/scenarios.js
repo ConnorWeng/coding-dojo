@@ -34,5 +34,9 @@ describe('tddd app', function() {
       element(by.cssContainingText('option', 'readme.md')).click();
       expect(browser.getCurrentUrl()).toContain('/gitlab/oyZUm9kJiqGPGYdqRg87RwHg3hbjW83l/repos/241/blobs/8d125892f02/readme.md/ut_get_factor.pck');
     });
+
+    it('should display commit message', function() {
+      expect(element(by.css('.msg')).getText()).toBe('初始化文件');
+    });
   });
 });

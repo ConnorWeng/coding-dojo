@@ -48,6 +48,7 @@ tdddControllers.controller('gitlabCtrl', ['$scope', '$location', 'repos', 'commi
 tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location', '$sce', 'files', 'commits', 'tree', function($scope, $routeParams, $location, $sce, files, commits, tree) {
   $scope.fileA = $scope.fileB = 'loading...';
   $scope.state = 0;
+  $scope.cmtMsg = '';
   fillCode('fileA');
   fillCode('fileB');
 
@@ -58,6 +59,7 @@ tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location',
     for (var i = 0; i < cmts.length; i++) {
       var cmt = cmts[i];
       if (cmt.short_id === $routeParams.sha) {
+        $scope.cmtMsg = cmt.title;
         $scope.state = (100 - parseInt(i * 100 / (cmts.length - 1))).toString() + '%';
         if (i - 1 > -1) {
           $scope.next = '/#' + $location.url().replace($routeParams.sha, cmts[i-1]['short_id']);
@@ -103,6 +105,14 @@ tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location',
       $scope[whichFile] = $sce.trustAsHtml(file.content);
     });
   }
+
+  $scope.msgPos = function() {
+    if (parseInt($scope.state) > 90) {
+      return 'right:0';
+    } else {
+      return 'left:' + $scope.state;
+    }
+  };
 }]);
 
 tdddApp.controller('listCtrl', ['$scope', 'counter', function($scope, counter) {
