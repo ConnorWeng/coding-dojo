@@ -15,6 +15,7 @@ router.get('/:privateKey/repos', makeInitGitlab(false), getRepo);
 router.get('/:privateKey/repos/:id/commits', makeInitGitlab(true), getCommits);
 router.get('/:privateKey/repos/:id/tree/:sha', makeInitGitlab(true), getTree);
 router.get('/:privateKey/repos/:id/blobs/:sha', makeInitGitlab(true), getFile);
+router.get('/:privateKey/repos/:id/commits/:sha', makeInitGitlab(true), getCommitDiff);
 
 function makeInitGitlab(isEncrypted) {
   return function(req, res, next) {
@@ -24,6 +25,14 @@ function makeInitGitlab(isEncrypted) {
     });
     next();
   };
+}
+
+function getCommitDiff(req, res, next) {
+  diffCommit(req.params.id, req.params.sha).then(function(commit) {
+    res.json(commit);
+  }).catch(function(reason) {
+    next(reason);
+  });
 }
 
 function getFile(req, res, next) {
@@ -130,6 +139,18 @@ function findRepo(repoUrl) {
       defered.resolve(project);
     } else {
       defered.reject(new Error('project not found'));
+    }
+  });
+  return defered.promise;
+}
+
+function diffCommit(id, sha) {
+  var defered = Q.defer();
+  gitlab.projects.repository.diffCommit(id, sha, function(commit) {
+    if (commit) {
+      defered.resolve(commit);
+    } else {
+      defered.reject(new Error('commit not found'));
     }
   });
   return defered.promise;
