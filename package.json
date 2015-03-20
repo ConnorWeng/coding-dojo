@@ -6,11 +6,8 @@
   "private": true,
   "scripts": {
     "postinstall": "bower install",
-    "prestart": "npm install",
     "start": "node ./bin/www",
-    "pretest": "npm install",
     "test": "node ./node_modules/mocha/bin/mocha -w --reporter=spec --recursive test/unit/backend",
-    "pretestfront": "npm install",
     "testfront": "karma start test/karma.conf.js",
     "preupdate-webdriver": "npm install",
     "update-webdriver": "webdriver-manager update",
