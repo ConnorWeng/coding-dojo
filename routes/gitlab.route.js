@@ -60,7 +60,7 @@ function getFileWithDiff(req, res, next) {
               type = 'java';
             }
             colorize(resultLines.join('\n'), type, 'html', function(data) {
-              res.json({content: data});
+              res.json({content: addClassToDiffLines(data)});
             });
           });
         }
@@ -191,6 +191,24 @@ function diffCommit(id, sha) {
     }
   });
   return defered.promise;
+};
+
+var addClassToDiffLines = router.addClassToDiffLines = function(data) {
+  var lines = data.split('\n');
+  var resultLines = [];
+  for(var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+    if (line.indexOf('<span class="o">+</span>') === 0) {
+      line = '<div class="diff-add-line">' + line + '</div>';
+      resultLines.push(line);
+    } else if (line.indexOf('<span class="o">-</span>') === 0) {
+      line = '<div class="diff-del-line">' + line + '</div>';
+      resultLines.push(line);
+    } else {
+      resultLines.push(line + '\n');
+    }
+  }
+  return resultLines.join('');
 };
 
 var parseDiff = router.parseDiff = function(diff) {

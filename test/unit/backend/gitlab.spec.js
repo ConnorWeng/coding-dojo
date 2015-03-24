@@ -114,4 +114,10 @@ describe('tddd', function() {
                         }]);
     });
   });
+
+  describe('addClassToDiffLines', function() {
+    it('should return code with diff class', function() {
+      router.addClassToDiffLines('<span class="o">+</span>        <span class="kd">private</span> <span class="kt">int</span> <span class="n">playTwoScore</span><span class="o">;</span>\n<span class="o">-</span>                <span class="c1">// TODO Auto-generated method stub</span>').should.equal('<div class="diff-add-line"><span class="o">+</span>        <span class="kd">private</span> <span class="kt">int</span> <span class="n">playTwoScore</span><span class="o">;</span></div><div class="diff-del-line"><span class="o">-</span>                <span class="c1">// TODO Auto-generated method stub</span></div>');
+    });
+  });
 });
