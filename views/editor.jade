@@ -4,12 +4,12 @@ div
   div.editor.editor-left
     div.filePath
       select(ng-model='filePathA', ng-options='path for path in filePaths', ng-change='switchFile()')
-    div.diff(ng-click='showDiff("fileA")') D
+    div.diff(ng-click='switchDiff("fileA")', ng-class='{loding:fileADiffLoading}')
     div(ng-bind-html='fileA')
   div.editor
     div.filePath
       select(ng-model='filePathB', ng-options='path for path in filePaths', ng-change='switchFile()')
-    div.diff(ng-click='showDiff("fileB")') D
+    div.diff(ng-click='switchDiff("fileB")', ng-class='{loding:fileBDiffLoading}')
     div(ng-bind-html='fileB')
   div.btnContainer
     div.btnContainerMargin

@@ -106,12 +106,20 @@ describe('tddd controllers', function() {
       expect(scope.filePathB).toBe('fileB');
     });
 
-    it('should return html with diff', function() {
+    it('should switch html between origin and diff and only request diff content for once', function() {
       $httpBackend.expectGET('/gitlab/privateKey/repos/id/commits/sha?filePath=fileA').respond({
         content: 'fileA content with diff'
       });
-      scope.showDiff('fileA');
+      scope.switchDiff('fileA');
+      expect(scope.fileADiffLoading).toBe(true);
       $httpBackend.flush();
+      expect(scope.fileADiffLoading).toBe(false);
+      expect($sce.getTrustedHtml(scope.fileA)).toBe('fileA content with diff');
+      scope.switchDiff('fileA');
+      expect(scope.fileADiffLoading).toBe(false);
+      expect($sce.getTrustedHtml(scope.fileA)).toBe('fileA content');
+      scope.switchDiff('fileA');
+      expect(scope.fileADiffLoading).toBe(false);
       expect($sce.getTrustedHtml(scope.fileA)).toBe('fileA content with diff');
     });
   });

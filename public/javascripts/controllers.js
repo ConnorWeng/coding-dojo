@@ -47,6 +47,8 @@ tdddControllers.controller('gitlabCtrl', ['$scope', '$location', 'repos', 'commi
 
 tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location', '$sce', 'files', 'commits', 'tree', 'diff', function($scope, $routeParams, $location, $sce, files, commits, tree, diff) {
   $scope.fileA = $scope.fileB = 'loading...';
+  $scope.fileAPrevContent = $scope.fileBPrevContent = '';
+  $scope.fileADiffLoading = $scope.fileBDiffLoading = false;
   $scope.state = 0;
   $scope.cmtMsg = '';
   fillCode('fileA');
@@ -114,15 +116,27 @@ tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location',
     }
   };
 
-  $scope.showDiff = function(whichFile) {
-    var fileWithDiff = diff.get({
-      privateKey: $routeParams.privateKey,
-      id: $routeParams.id,
-      sha: $routeParams.sha,
-      filePath: $routeParams[whichFile]
-    }, function(file) {
-      $scope[whichFile] = $sce.trustAsHtml(file.content);
-    });
+  $scope.switchDiff = function(whichFile) {
+    if ($scope[whichFile + 'DiffLoading']) {
+      return;
+    }
+    var prevContent = $scope[whichFile + 'PrevContent'];
+    if (prevContent) {
+      $scope[whichFile + 'PrevContent'] = $scope[whichFile];
+      $scope[whichFile] = prevContent;
+    } else {
+      $scope[whichFile + 'DiffLoading'] = true;
+      var fileWithDiff = diff.get({
+        privateKey: $routeParams.privateKey,
+        id: $routeParams.id,
+        sha: $routeParams.sha,
+        filePath: $routeParams[whichFile]
+      }, function(file) {
+        $scope[whichFile + 'DiffLoading'] = false;
+        $scope[whichFile + 'PrevContent'] = $scope[whichFile];
+        $scope[whichFile] = $sce.trustAsHtml(file.content);
+      });
+    }
   };
 }]);
 
