@@ -105,5 +105,14 @@ describe('tddd controllers', function() {
       expect(scope.filePathA).toBe('fileA');
       expect(scope.filePathB).toBe('fileB');
     });
-  })
+
+    it('should return html with diff', function() {
+      $httpBackend.expectGET('/gitlab/privateKey/repos/id/commits/sha?filePath=fileA').respond({
+        content: 'fileA content with diff'
+      });
+      scope.showDiff('fileA');
+      $httpBackend.flush();
+      expect($sce.getTrustedHtml(scope.fileA)).toBe('fileA content with diff');
+    });
+  });
 });

@@ -45,7 +45,7 @@ tdddControllers.controller('gitlabCtrl', ['$scope', '$location', 'repos', 'commi
   };
 }]);
 
-tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location', '$sce', 'files', 'commits', 'tree', function($scope, $routeParams, $location, $sce, files, commits, tree) {
+tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location', '$sce', 'files', 'commits', 'tree', 'diff', function($scope, $routeParams, $location, $sce, files, commits, tree, diff) {
   $scope.fileA = $scope.fileB = 'loading...';
   $scope.state = 0;
   $scope.cmtMsg = '';
@@ -112,6 +112,17 @@ tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location',
     } else {
       return 'left:' + $scope.state;
     }
+  };
+
+  $scope.showDiff = function(whichFile) {
+    var fileWithDiff = diff.get({
+      privateKey: $routeParams.privateKey,
+      id: $routeParams.id,
+      sha: $routeParams.sha,
+      filePath: $routeParams[whichFile]
+    }, function(file) {
+      $scope[whichFile] = $sce.trustAsHtml(file.content);
+    });
   };
 }]);
 

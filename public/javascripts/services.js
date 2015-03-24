@@ -19,3 +19,7 @@ tdddApp.factory('counter', ['$resource', function($resource) {
     incr: {method:'POST', params: {name: '@name'}}
   });
 }]);
+
+tdddApp.factory('diff', ['$resource', function($resource) {
+  return $resource('/gitlab/:privateKey/repos/:id/commits/:sha');
+}]);

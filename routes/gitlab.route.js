@@ -15,7 +15,7 @@ router.get('/:privateKey/repos', makeInitGitlab(false), getRepo);
 router.get('/:privateKey/repos/:id/commits', makeInitGitlab(true), getCommits);
 router.get('/:privateKey/repos/:id/tree/:sha', makeInitGitlab(true), getTree);
 router.get('/:privateKey/repos/:id/blobs/:sha', makeInitGitlab(true), getFile);
-router.get('/:privateKey/repos/:id/commits/:sha', makeInitGitlab(true), getCommitDiff);
+router.get('/:privateKey/repos/:id/commits/:sha', makeInitGitlab(true), getFileWithDiff);
 
 function makeInitGitlab(isEncrypted) {
   return function(req, res, next) {
@@ -27,13 +27,50 @@ function makeInitGitlab(isEncrypted) {
   };
 }
 
-function getCommitDiff(req, res, next) {
-  diffCommit(req.params.id, req.params.sha).then(function(commit) {
-    res.json(commit);
+function getFileWithDiff(req, res, next) {
+  diffCommit(req.params.id, req.params.sha).then(function(diffs) {
+    for (var i in diffs) {
+      var d = diffs[i];
+      if (d.diff) {
+        var path = d.new_path.replace(/\//g, '|');
+        if (path === req.query.filePath) {
+          var diffParts = parseDiff(d.diff);
+          showFile(req.params.id, req.params.sha, path.replace(/\|/g, '/')).then(function(file) {
+            var fileLines = file.split('\n');
+            var resultLines = [];
+            var k = 0;
+            for(var j = 0; j < diffParts.length; j++) {
+              var dp = diffParts[j];
+              var diffLines = dp.content.split('\n');
+              for(; k < dp.newStart - 1; k++) {
+                resultLines.push(fileLines[k]);
+              }
+              for(var l = 0; l < diffLines.length; l++) {
+                resultLines.push(diffLines[l]);
+              }
+              k = dp.newStart + dp.newLength - 1;
+              if (j === diffParts.length - 1) {
+                for(var m = dp.newStart + dp.newLength - 1; m < fileLines.length; m++) {
+                  resultLines.push(fileLines[m]);
+                }
+              }
+            }
+            var type = 'sql';
+            if (~req.query.filePath.indexOf('.java')) {
+              type = 'java';
+            }
+            colorize(resultLines.join('\n'), type, 'html', function(data) {
+              res.json({content: data});
+            });
+          });
+        }
+      }
+    }
   }).catch(function(reason) {
     next(reason);
   });
 }
+router.getFileWithDiff = getFileWithDiff;
 
 function getFile(req, res, next) {
   showFile(req.params.id, req.params.sha, req.query.filePath.replace(/\|/g, '/')).then(function(file) {
@@ -154,7 +191,32 @@ function diffCommit(id, sha) {
     }
   });
   return defered.promise;
-}
+};
+
+var parseDiff = router.parseDiff = function(diff) {
+  var diffLines = diff.split('\n');
+  var diffHeader = diffLines.slice(0, 2);
+  var diffBody = diffLines.slice(2);
+  var diffParts = [];
+  var part;
+  for(var i = 0; i < diffBody.length; i++) {
+    var line = diffBody[i];
+    if (line.indexOf('@@') === 0) {
+      var match = line.match(/@@ -(\d+),(\d+) \+(\d+),(\d+) @@/);
+      part = {
+        content: ''
+      };
+      part.oldStart = parseInt(match[1]);
+      part.oldLength = parseInt(match[2]);
+      part.newStart = parseInt(match[3]);
+      part.newLength = parseInt(match[4]);
+      diffParts.push(part);
+      continue;
+    }
+    part.content += line + ((i === diffBody.length - 1 || diffBody[i+1].indexOf('@@') === 0) ? '' : '\n');
+  }
+  return diffParts;
+};
 
 var encrypt = router.encrypt = function(plain) {
   var cipher = crypto.createCipher('des', encryptKey);
@@ -168,6 +230,16 @@ var decrypt = router.decrypt = function(encrypted) {
   var plain = decipher.update(encrypted, 'base64', 'utf8');
   plain += decipher.final('utf8');
   return plain;
+};
+
+router.setDiffCommit = function(func) {
+  diffCommit = func;
+};
+router.setShowFile = function(func) {
+  showFile = func;
+};
+router.setColorize = function(func) {
+  colorize = func;
 };
 
 module.exports = router;
