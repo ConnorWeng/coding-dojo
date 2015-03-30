@@ -11,7 +11,6 @@
     "testfront": "karma start test/karma.conf.js",
     "preupdate-webdriver": "npm install",
     "update-webdriver": "webdriver-manager update",
-    "preprotractor": "npm run update-webdriver",
     "protractor": "protractor test/protractor-conf.js"
   },
   "dependencies": {
