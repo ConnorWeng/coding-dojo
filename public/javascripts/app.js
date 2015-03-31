@@ -1,6 +1,6 @@
 var tdddApp = angular.module('tdddApp', ['ngResource', 'ngRoute', 'tdddControllers']);
 
-tdddApp.config(['$routeProvider', function($routeProvider) {
+tdddApp.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
   $routeProvider.
     when('/', {
       templateUrl: 'templates/list',
@@ -17,4 +17,6 @@ tdddApp.config(['$routeProvider', function($routeProvider) {
     otherwise({
       redirectTo: '/'
     });
+
+  $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 }]);

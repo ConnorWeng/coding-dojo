@@ -36,6 +36,17 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
+app.use(function(err, req, res, next) {
+  if (req.xhr) {
+    res.status(err.status || 500);
+    res.json({
+      message: err.message,
+      error: err
+    });
+  } else {
+    next(err);
+  }
+});
 
 // development error handler
 // will print stacktrace
