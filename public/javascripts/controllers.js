@@ -158,4 +158,7 @@ tdddApp.controller('listCtrl', ['$scope', 'counter', function($scope, counter) {
       $scope['counter' + id] = count.count;
     });
   };
+
+  $scope.addProblem = function() {
+  };
 }]);
