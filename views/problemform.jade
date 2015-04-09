@@ -1,0 +1,12 @@
+form(name='problemForm')
+  ul
+    li
+      lable
+        span 题目：
+      input.title(ng-model='title', required)
+    li
+      label
+        span 描述：
+      textarea.desc(ng-model='desc', rows='8', required)
+    li
+      input(type='submit', class='btn', value='添加', ng-click='addProblem()', ng-disabled='!problemForm.$valid')

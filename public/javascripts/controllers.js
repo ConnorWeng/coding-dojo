@@ -1,4 +1,4 @@
-var tdddControllers = angular.module('tdddControllers', ['ngSanitize']);
+var tdddControllers = angular.module('tdddControllers', ['ngSanitize', 'ui.bootstrap.modal']);
 
 tdddControllers.controller('gitlabCtrl', ['$scope', '$location', 'repos', 'commits', 'tree', function($scope, $location, repos, commits, tree) {
   $scope.getRepo = function() {
@@ -140,7 +140,7 @@ tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location',
   };
 }]);
 
-tdddApp.controller('listCtrl', ['$scope', 'counter', function($scope, counter) {
+tdddApp.controller('listCtrl', ['$scope', '$modal', 'counter', function($scope, $modal, counter) {
   initCounter(241);
   initCounter(270);
   initCounter(271);
@@ -160,5 +160,15 @@ tdddApp.controller('listCtrl', ['$scope', 'counter', function($scope, counter) {
   };
 
   $scope.addProblem = function() {
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/problemform',
+      controller: 'problemFormCtrl'
+    });
+  };
+}]);
+
+tdddApp.controller('problemFormCtrl', ['$scope', '$modalInstance', function($scope, $modalInstance) {
+  $scope.addProblem = function() {
+
   };
 }]);
