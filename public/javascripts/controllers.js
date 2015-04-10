@@ -164,11 +164,19 @@ tdddApp.controller('listCtrl', ['$scope', '$modal', 'counter', function($scope, 
       templateUrl: 'templates/problemform',
       controller: 'problemFormCtrl'
     });
+    modalInstance.result.then(function(problem) {
+
+    });
   };
 }]);
 
-tdddApp.controller('problemFormCtrl', ['$scope', '$modalInstance', function($scope, $modalInstance) {
+tdddApp.controller('problemFormCtrl', ['$scope', '$modalInstance', 'problem', function($scope, $modalInstance, problem) {
   $scope.addProblem = function() {
-
+    var newProblem = {title: $scope.title, desc: $scope.desc};
+    problem.save(void 0, newProblem, function(reply) {
+      $modalInstance.close(newProblem);
+    }, function(reason) {
+      alert(reason);
+    });
   };
 }]);

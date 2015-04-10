@@ -20,6 +20,7 @@ module.exports = function(config) {
       'public/bower_components/angular-route/angular-route.js',
       'public/bower_components/angular-mocks/angular-mocks.js',
       'public/bower_components/angular-sanitize/angular-sanitize.js',
+      'public/bower_components/angular-ui-bootstrap/dist/ui-bootstrap-custom-0.12.1.min.js',
       'public/javascripts/**/*.js',
       'test/unit/frontend/**/*.js'
     ],

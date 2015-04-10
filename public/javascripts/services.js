@@ -23,3 +23,7 @@ tdddApp.factory('counter', ['$resource', function($resource) {
 tdddApp.factory('diff', ['$resource', function($resource) {
   return $resource('/gitlab/:privateKey/repos/:id/commits/:sha');
 }]);
+
+tdddApp.factory('problem', ['$resource', function($resource) {
+  return $resource('/problem/:id', {id: '@id'});
+}]);
