@@ -39,4 +39,20 @@ describe('tddd app', function() {
       expect(element(by.css('.msg')).getText()).toBe('初始化文件');
     });
   });
+
+  describe('list page', function() {
+    beforeEach(function() {
+      browser.get('/');
+    });
+
+    it('should add a new problem onto the page', function() {
+      var problems = element.all(by.repeater('problem in problems'));
+      element(by.css('.add-problem')).click();
+      var time = new Date().getTime();
+      element(by.css('.title')).sendKeys('title' + time);
+      element(by.css('.desc')).sendKeys('desc' + time);
+      element(by.css('.btn')).click();
+      expect(problems.last().getText()).toBe('title' + time);
+    });
+  });
 });

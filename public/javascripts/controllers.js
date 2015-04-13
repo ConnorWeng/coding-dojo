@@ -151,7 +151,7 @@ tdddApp.controller('listCtrl', ['$scope', '$modal', 'problem', function($scope, 
       controller: 'problemFormCtrl'
     });
     modalInstance.result.then(function(problem) {
-
+      $scope.problems.push(problem);
     });
   };
 }]);
