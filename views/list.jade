@@ -4,20 +4,7 @@ div.listContainer
     h1 CodingDojo
   div.list
     ul.dojos
-      li
-        a(href='/#/gitlab/oyZUm9kJiqGPGYdqRg87RwHg3hbjW83l/repos/241/blobs/7a1635acbb8/ut_get_factor.pck/fnc_get_factor.fnc', ng-click='incrCounter(241)') 用PL/SQL来做小学数学题《分解质因数》
-        span.count (阅读量:{{counter241}})
-      li
-        a(href='/#/gitlab/oyZUm9kJiqGPGYdqRg87RwHg3hbjW83l/repos/270/blobs/eaf85edbdad/src%7CTennisTest.java/src%7CTennis.java', ng-click='incrCounter(270)') 用JAVA来做网球计分牌
-        span.count &nbsp;(阅读量:{{counter270}})
-      li
-        a(href='/#/gitlab/oyZUm9kJiqGPGYdqRg87RwHg3hbjW83l/repos/271/blobs/65e4ad0754a/src%7Cblockdojo%7CBlockDojoTest.java/src%7Cblockdojo%7CBlockDojo.java', ng-click='incrCounter(271)') 陶师傅用JAVA来贴瓷砖（上集）
-        span.count (阅读量:{{counter271}})
-      li
-        a(href='/#/gitlab/oyZUm9kJiqGPGYdqRg87RwHg3hbjW83l/repos/272/blobs/a5e10f320eb/dojo%7Csdc%7Cicbc%7CCeramicPrinterTestCase.java/dojo%7Csdc%7Cicbc%7CCeramicPrinter.java', ng-click='incrCounter(272)') 陶师傅用JAVA来贴瓷砖（下集）
-        span.count (阅读量:{{counter272}})
-      li
-        a(href='/#/gitlab/oyZUm9kJiqGPGYdqRg87RwHg3hbjW83l/repos/279/blobs/53ae67e077c/ut_word_wrap.pck/word_wrap.fnc', ng-click='incrCounter(279)') 用PLSQL单词换行
-        span.count (阅读量:{{counter279}})
+      li(ng-repeat='problem in problems')
+        a(href='javascript: void 0') {{problem.title}}
   div.add-problem-container
     a.add-problem(ng-click="addProblem()") +题目

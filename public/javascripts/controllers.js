@@ -140,24 +140,10 @@ tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location',
   };
 }]);
 
-tdddApp.controller('listCtrl', ['$scope', '$modal', 'counter', function($scope, $modal, counter) {
-  initCounter(241);
-  initCounter(270);
-  initCounter(271);
-  initCounter(272);
-  initCounter(279);
-
-  function initCounter(id) {
-    var count = counter.get({name: id}, function() {
-      $scope['counter' + id] = count.count;
-    });
-  }
-
-  $scope.incrCounter = function(id, href) {
-    var count = counter.incr({name: id}, function() {
-      $scope['counter' + id] = count.count;
-    });
-  };
+tdddApp.controller('listCtrl', ['$scope', '$modal', 'problem', function($scope, $modal, problem) {
+  problem.query(function(problems) {
+    $scope.problems = problems;
+  });
 
   $scope.addProblem = function() {
     var modalInstance = $modal.open({
