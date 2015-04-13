@@ -8,6 +8,7 @@
     "postinstall": "bower install",
     "start": "node ./bin/www",
     "test": "node ./node_modules/mocha/bin/mocha -w --reporter=spec --recursive test/unit/backend",
+    "testall": "node ./node_modules/mocha/bin/mocha --reporter=spec --recursive test/unit/backend && karma start test/karma.conf.js --single-run && protractor test/protractor-conf.js",
     "testfront": "karma start test/karma.conf.js",
     "preupdate-webdriver": "npm install",
     "update-webdriver": "webdriver-manager update",

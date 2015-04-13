@@ -16,7 +16,7 @@ CodingDojo是一个用于浏览和回顾TDD代码的小工具。可以通过翻�
 
 ### 安装依赖包 ###
 
-CodingDojo依赖很多node.js的package，例如express，redis, bower等。如果你没有全局安装过bower，建议先运行（安装过就可以跳过）：
+CodingDojo依赖很多node.js的package，例如express、redis、bower等。如果你没有全局安装过bower，建议先运行（安装过就可以跳过）：
 
 ```
 npm install bower -g
@@ -39,3 +39,14 @@ npm install
 - 后端单元测试：`npm test`
 - 前端单元测试：`npm run testfront`
 - 端到端测试：`npm run protractor`
+- 运行所有测试: `npm run testall`
+
+### commit hook ###
+
+每次commit前，应当保证所有的测试通过。我们可以通过修改git的commit-hook在commit前强制执行所有测试。在`.git/hooks/`下添加文件`pre-commit`，内容如下：
+
+```
+#!/bin/sh
+
+npm run testall
+```
