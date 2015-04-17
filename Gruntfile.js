@@ -1,6 +1,20 @@
 module.exports = function(grunt) {
+  var jsFiles = [
+    'public/javascripts/**/*.js',
+    'routes/**/*.js',
+    'lib/**/*.js',
+    'test/**/*.js'
+  ];
+
   grunt.initConfig({
+    jshint: {
+      files: jsFiles
+    },
     watch: {
+      lint: {
+        tasks: ['jshint'],
+        files: jsFiles
+      },
       livereload: {
         files: [
           'public/javascripts/**/*.js',
@@ -14,5 +28,6 @@ module.exports = function(grunt) {
       }
     }
   });
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
 };

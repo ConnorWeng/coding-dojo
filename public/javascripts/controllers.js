@@ -12,7 +12,7 @@ tdddControllers.controller('gitlabCtrl', ['$scope', '$location', 'repos', 'commi
         id: $scope.repo.id
       }).$promise;
     }).then(function(cmts) {
-      $scope.sha = cmts[cmts.length - 1]['short_id'];
+      $scope.sha = cmts[cmts.length - 1].short_id;
       return tree.query({
         privateKey: $scope.repo.encrypted_private_key,
         id: $scope.repo.id,
@@ -64,10 +64,10 @@ tdddControllers.controller('editorCtrl', ['$scope', '$routeParams', '$location',
         $scope.cmtMsg = cmt.title;
         $scope.state = (100 - parseInt(i * 100 / (cmts.length - 1))).toString() + '%';
         if (i - 1 > -1) {
-          $scope.next = '/#' + $location.url().replace($routeParams.sha, cmts[i-1]['short_id']);
+          $scope.next = '/#' + $location.url().replace($routeParams.sha, cmts[i-1].short_id);
         }
         if (i + 1 < cmts.length) {
-          $scope.prev = '/#' + $location.url().replace($routeParams.sha, cmts[i+1]['short_id']);
+          $scope.prev = '/#' + $location.url().replace($routeParams.sha, cmts[i+1].short_id);
         }
         break;
       }

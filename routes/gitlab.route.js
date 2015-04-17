@@ -112,7 +112,7 @@ function getCommits(req, res, next) {
   });
 }
 
-function showFile(id, sha, filePath) {
+var showFile = function(id, sha, filePath) {
   var defered = Q.defer();
   gitlab.projects.repository.showFile(id, {ref: sha, file_path: filePath}, function(file) {
     try {
@@ -122,7 +122,7 @@ function showFile(id, sha, filePath) {
     }
   });
   return defered.promise;
-}
+};
 
 function listFiles(id, sha, path, remains, defered, files) {
   files = files || [];
@@ -181,7 +181,7 @@ function findRepo(repoUrl) {
   return defered.promise;
 }
 
-function diffCommit(id, sha) {
+var diffCommit = function(id, sha) {
   var defered = Q.defer();
   gitlab.projects.repository.diffCommit(id, sha, function(commit) {
     if (commit) {
