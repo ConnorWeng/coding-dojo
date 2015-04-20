@@ -10,6 +10,11 @@ module.exports = function(grunt) {
     jshint: {
       files: jsFiles
     },
+    nodemon: {
+      dev: {
+        script: 'bin/www'
+      }
+    },
     watch: {
       lint: {
         tasks: ['jshint'],
@@ -26,8 +31,16 @@ module.exports = function(grunt) {
           livereload: true
         }
       }
+    },
+    concurrent: {
+      dev: {
+        tasks: ['nodemon', 'watch']
+      }
     }
   });
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-nodemon');
+  grunt.loadNpmTasks('grunt-concurrent');
+  grunt.registerTask('serv', ['concurrent:dev']);
 };
