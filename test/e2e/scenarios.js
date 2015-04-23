@@ -54,5 +54,10 @@ describe('tddd app', function() {
       element(by.css('.btn')).click();
       expect(problems.last().getText()).toBe('title' + time);
     });
+
+    it('should jump to problem page after clicking one of problem title', function() {
+      element.all(by.repeater('problem in problems')).get(0).click();
+      expect(browser.getCurrentUrl()).toContain('/#/problem/1');
+    });
   });
 });

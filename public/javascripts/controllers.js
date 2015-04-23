@@ -166,3 +166,7 @@ tdddApp.controller('problemFormCtrl', ['$scope', '$modalInstance', 'problem', fu
     });
   };
 }]);
+
+tdddApp.controller('problemCtrl', ['$scope', '$routeParams', 'problem', function($scope, $routeParams, problem) {
+  $scope.problem = problem.get({id:$routeParams.id});
+}]);

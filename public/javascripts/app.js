@@ -10,6 +10,10 @@ tdddApp.config(['$routeProvider', '$httpProvider', function($routeProvider, $htt
       templateUrl: 'templates/gitlab',
       controller: 'gitlabCtrl'
     }).
+    when('/problem/:id', {
+      templateUrl: 'templates/problem',
+      controller: 'problemCtrl'
+    }).
     when('/gitlab/:privateKey/repos/:id/blobs/:sha/:fileA/:fileB', {
       templateUrl: 'templates/editor',
       controller: 'editorCtrl'

@@ -5,6 +5,6 @@ div.listContainer
   div.list
     ul.dojos
       li(ng-repeat='problem in problems')
-        a(href='javascript: void 0') {{problem.title}}
+        a(href='/#/problem/{{problem.id}}') {{problem.title}}
   div.add-problem-container
     a.add-problem(ng-click="addProblem()") +题目
