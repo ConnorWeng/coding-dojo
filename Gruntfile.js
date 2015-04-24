@@ -16,10 +16,6 @@ module.exports = function(grunt) {
       }
     },
     watch: {
-      lint: {
-        tasks: ['jshint'],
-        files: jsFiles
-      },
       livereload: {
         files: [
           'public/javascripts/**/*.js',
