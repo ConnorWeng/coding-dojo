@@ -38,6 +38,13 @@ describe('tddd app', function() {
     it('should display commit message', function() {
       expect(element(by.css('.msg')).getText()).toBe('初始化文件');
     });
+
+    it('should see diff after clicking diff button', function() {
+      browser.get('/#/gitlab/oyZUm9kJiqGPGYdqRg87RwHg3hbjW83l/repos/241/blobs/ce18f06df69/fnc_get_factor.fnc/ut_get_factor.pck');
+      element.all(by.css('.diff')).get(0).click();
+      expect(element.all(by.css('.diff-add-line')).count()).toBe(5);
+      expect(element.all(by.css('.diff-del-line')).count()).toBe(1);
+    });
   });
 
   describe('list page', function() {
