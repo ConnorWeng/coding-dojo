@@ -1,0 +1,16 @@
+form(name='solutionForm')
+  ul
+    li
+      lable
+        span 标题：
+      input.title(ng-model='title', required)
+    li
+      lable
+        span 作者：
+      input.title(ng-model='author', required)
+    li
+      lable
+        span 链接：
+      input.title(ng-model='link', required)
+    li
+      input(type='submit', class='btn', value='添加', ng-click='addSolution()', ng-disabled='!solutionForm.$valid')

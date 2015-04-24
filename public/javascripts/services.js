@@ -27,3 +27,7 @@ tdddApp.factory('diff', ['$resource', function($resource) {
 tdddApp.factory('problem', ['$resource', function($resource) {
   return $resource('/problem/:id', {id: '@id'});
 }]);
+
+tdddApp.factory('solution', ['$resource', function($resource) {
+  return $resource('/solution/:id', {id: '@id'});
+}]);

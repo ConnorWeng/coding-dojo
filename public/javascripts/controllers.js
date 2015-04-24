@@ -167,6 +167,34 @@ tdddApp.controller('problemFormCtrl', ['$scope', '$modalInstance', 'problem', fu
   };
 }]);
 
-tdddApp.controller('problemCtrl', ['$scope', '$routeParams', 'problem', function($scope, $routeParams, problem) {
+tdddApp.controller('solutionFormCtrl', ['$scope', '$modalInstance', 'solution', function($scope, $modalInstance, solution) {
+  $scope.addSolution = function() {
+    var newSolution = {
+      problemId: 'problem:' + $scope.problem.id,
+      title: $scope.title,
+      author: $scope.author,
+      link: $scope.link
+    };
+    solution.save(void 0, newSolution, function(reply) {
+      $modalInstance.close(newSolution);
+    }, function(reason) {
+      alert(reason);
+    });
+  };
+}]);
+
+tdddApp.controller('problemCtrl', ['$scope', '$routeParams', '$modal', 'problem', 'solution', function($scope, $routeParams, $modal, problem, solution) {
   $scope.problem = problem.get({id:$routeParams.id});
+  $scope.solutions = [];
+
+  $scope.addSolution = function() {
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/solutionform',
+      controller: 'solutionFormCtrl',
+      scope: $scope
+    });
+    modalInstance.result.then(function(solution) {
+      $scope.solutions.push(solution);
+    });
+  };
 }]);
