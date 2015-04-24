@@ -27,6 +27,37 @@ function makeInitGitlab(isEncrypted) {
   };
 }
 
+function makeDiffRequestHandler(req, res, diffParts) {
+  return function(file) {
+    var fileLines = file.split('\n');
+    var resultLines = [];
+    var k = 0;
+    for(var j = 0; j < diffParts.length; j++) {
+      var dp = diffParts[j];
+      var diffLines = dp.content.split('\n');
+      for(; k < dp.newStart - 1; k++) {
+        resultLines.push(fileLines[k]);
+      }
+      for(var l = 0; l < diffLines.length; l++) {
+        resultLines.push(diffLines[l]);
+      }
+      k = dp.newStart + dp.newLength - 1;
+      if (j === diffParts.length - 1) {
+        for(var m = dp.newStart + dp.newLength - 1; m < fileLines.length; m++) {
+          resultLines.push(fileLines[m]);
+        }
+      }
+    }
+    var type = 'sql';
+    if (~req.query.filePath.indexOf('.java')) {
+      type = 'java';
+    }
+    colorize(resultLines.join('\n'), type, 'html', function(data) {
+      res.json({content: addClassToDiffLines(data)});
+    });
+  };
+}
+
 function getFileWithDiff(req, res, next) {
   diffCommit(req.params.id, req.params.sha).then(function(diffs) {
     for (var i in diffs) {
@@ -35,34 +66,7 @@ function getFileWithDiff(req, res, next) {
         var path = d.new_path.replace(/\//g, '|');
         if (path === req.query.filePath) {
           var diffParts = parseDiff(d.diff);
-          showFile(req.params.id, req.params.sha, path.replace(/\|/g, '/')).then(function(file) {
-            var fileLines = file.split('\n');
-            var resultLines = [];
-            var k = 0;
-            for(var j = 0; j < diffParts.length; j++) {
-              var dp = diffParts[j];
-              var diffLines = dp.content.split('\n');
-              for(; k < dp.newStart - 1; k++) {
-                resultLines.push(fileLines[k]);
-              }
-              for(var l = 0; l < diffLines.length; l++) {
-                resultLines.push(diffLines[l]);
-              }
-              k = dp.newStart + dp.newLength - 1;
-              if (j === diffParts.length - 1) {
-                for(var m = dp.newStart + dp.newLength - 1; m < fileLines.length; m++) {
-                  resultLines.push(fileLines[m]);
-                }
-              }
-            }
-            var type = 'sql';
-            if (~req.query.filePath.indexOf('.java')) {
-              type = 'java';
-            }
-            colorize(resultLines.join('\n'), type, 'html', function(data) {
-              res.json({content: addClassToDiffLines(data)});
-            });
-          });
+          showFile(req.params.id, req.params.sha, path.replace(/\|/g, '/')).then(makeDiffRequestHandler(req, res, diffParts));
         }
       }
     }
