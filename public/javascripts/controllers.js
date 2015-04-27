@@ -162,7 +162,7 @@ tdddApp.controller('problemFormCtrl', ['$scope', '$modalInstance', 'problem', fu
     problem.save(void 0, newProblem, function(reply) {
       $modalInstance.close(newProblem);
     }, function(reason) {
-      alert(reason);
+      alert(reason.message);
     });
   };
 }]);
@@ -170,7 +170,7 @@ tdddApp.controller('problemFormCtrl', ['$scope', '$modalInstance', 'problem', fu
 tdddApp.controller('solutionFormCtrl', ['$scope', '$modalInstance', 'solution', function($scope, $modalInstance, solution) {
   $scope.addSolution = function() {
     var newSolution = {
-      problemId: 'problem:' + $scope.problem.id,
+      id: 'problem:' + $scope.problem.id,
       title: $scope.title,
       author: $scope.author,
       link: $scope.link
@@ -178,7 +178,7 @@ tdddApp.controller('solutionFormCtrl', ['$scope', '$modalInstance', 'solution', 
     solution.save(void 0, newSolution, function(reply) {
       $modalInstance.close(newSolution);
     }, function(reason) {
-      alert(reason);
+      alert(reason.message);
     });
   };
 }]);

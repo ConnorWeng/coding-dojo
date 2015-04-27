@@ -29,5 +29,5 @@ tdddApp.factory('problem', ['$resource', function($resource) {
 }]);
 
 tdddApp.factory('solution', ['$resource', function($resource) {
-  return $resource('/solution/:id', {id: '@id'});
+  return $resource('/problem/:id/solution/:sid', {id: '@id'});
 }]);
