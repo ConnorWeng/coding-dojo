@@ -7,10 +7,10 @@ form(name='solutionForm')
     li
       lable
         span 作者：
-      input.title(ng-model='author', required)
+      input.author(ng-model='author', required)
     li
       lable
         span 链接：
-      input.title(ng-model='link', required)
+      input.link(ng-model='link', required)
     li
       input(type='submit', class='btn', value='添加', ng-click='addSolution()', ng-disabled='!solutionForm.$valid')

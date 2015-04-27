@@ -67,4 +67,22 @@ describe('tddd app', function() {
       expect(browser.getCurrentUrl()).toContain('/#/problem/1');
     });
   });
+
+  describe('problem page', function() {
+    beforeEach(function() {
+      browser.get('/');
+      element.all(by.repeater('problem in problems')).get(0).click();
+    });
+
+    it('should add a new solution onto the page', function() {
+      var solutions = element.all(by.repeater('solution in solutions'));
+      var time = new Date().getTime();
+      element(by.css('.add-solution')).click();
+      element(by.css('.title')).sendKeys('title' + time);
+      element(by.css('.author')).sendKeys('author' + time);
+      element(by.css('.link')).sendKeys('link' + time);
+      element(by.css('.btn')).click();
+      expect(solutions.last().getText()).toBe('title' + time);
+    });
+  });
 });

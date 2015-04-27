@@ -1,11 +1,7 @@
 h1.problem-title {{problem.title}}
 p.problem-desc {{problem.desc}}
 ul.solution-list
-  li
-    a(href='#') abc
-  li
-    a(href='#') def
-  li
-    a(href='#') ghi
+  li(ng-repeat='solution in solutions')
+    a(href='{{solution.link}}') {{solution.title}}
 div.add-solution-container
   a.add-solution(ng-click='addSolution()') +解答

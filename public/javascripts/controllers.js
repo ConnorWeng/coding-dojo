@@ -185,7 +185,7 @@ tdddApp.controller('solutionFormCtrl', ['$scope', '$modalInstance', 'solution', 
 
 tdddApp.controller('problemCtrl', ['$scope', '$routeParams', '$modal', 'problem', 'solution', function($scope, $routeParams, $modal, problem, solution) {
   $scope.problem = problem.get({id:$routeParams.id});
-  $scope.solutions = [];
+  $scope.solutions = solution.query({id:$routeParams.id});
 
   $scope.addSolution = function() {
     var modalInstance = $modal.open({
